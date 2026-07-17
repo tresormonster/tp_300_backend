@@ -584,6 +584,8 @@ const statut =
 
     id_note: n.id_note,
 
+    id_ue: n.ue.id_ue,
+
     code_ue: n.ue.code_ue,
 
     nom_ue: n.ue.nom_ue,
@@ -597,12 +599,9 @@ const statut =
     note_sn: n.note_sn,
 
     note_finale:
-
-  !notesCompletes
-
-    ? null
-
-    : n.note_finale,
+      !notesCompletes
+        ? null
+        : n.note_finale,
 
     decision: n.decision,
 

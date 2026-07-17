@@ -22,15 +22,41 @@ export class Requete {
   @Column('text')
   message!: string;
 
-  @Column({
-    nullable: true,
-  })
-  reponse!: string;
+ @Column({
+  type: 'text',
+  nullable: true,
+})
+reponse!: string | null;
 
   @Column({
     default: 'EN_ATTENTE',
   })
   statut!: string;
+
+
+ @Column({
+  type: 'text',
+  array: true,
+  nullable: true,
+})
+pieces_jointes!: string[];
+
+
+@Column({
+  type: 'timestamp',
+  default: () => 'CURRENT_TIMESTAMP',
+})
+date_creation!: Date;
+
+
+
+@Column({
+  type: 'timestamp',
+  nullable: true,
+})
+date_reponse!: Date;
+
+
 
   @ManyToOne(() => Etudiant)
   @JoinColumn({ name: 'id_etudiant' })

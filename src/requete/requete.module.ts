@@ -9,6 +9,7 @@ import { UE } from '../ue/entities/ue.entity';
 import { RequeteService } from './requete.service';
 import { RequeteController } from './requete.controller';
 import { Enseignement } from '../enseignement/entities/enseignement.entity';
+import { Note } from '../note/entities/note.entity';
 
 @Module({
   imports: [
@@ -18,6 +19,8 @@ import { Enseignement } from '../enseignement/entities/enseignement.entity';
       Enseignant,
       UE,
       Enseignement,
+       Requete,
+  Note,
     ]),
   ],
   controllers: [

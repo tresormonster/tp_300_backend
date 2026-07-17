@@ -7,4 +7,6 @@ export class CreateRequeteDto {
   objet!: string;
 
   message!: string;
+
+  pieces_jointes?: string[];
 }
