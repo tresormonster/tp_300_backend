@@ -427,9 +427,11 @@ async requetesEnseignant(
       },
 
       relations: [
-        'etudiant',
-        'ue',
-      ],
+  'etudiant',
+  'etudiant.niveau',
+  'etudiant.niveau.filiere',
+  'ue',
+],
 
       order: {
         id_requete: 'DESC',
@@ -481,6 +483,13 @@ async requetesEnseignant(
 
     prenom_enseignant:
       r.enseignant?.prenom,
+
+
+      niveau:
+  r.etudiant.niveau.nom_niveau,
+
+filiere:
+  r.etudiant.niveau.filiere.nom_filiere,
   }),
 );
 }
