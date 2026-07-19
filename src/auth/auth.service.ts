@@ -24,6 +24,9 @@ from './dto/login.dto';
 import { Enseignant }
 from '../enseignant/entities/enseignant.entity';
 
+
+import { Admin }
+from '../admin/entities/admin.entity';
 @Injectable()
 export class AuthService {
 
@@ -41,6 +44,8 @@ export class AuthService {
 
 private enseignantRepo:
     Repository<Enseignant>,
+    @InjectRepository(Admin)
+private adminRepo: Repository<Admin>,
   ) {}
 
   // 🔥 LOGIN
@@ -156,6 +161,47 @@ private enseignantRepo:
       };
     }
   }
+
+  // ===== ADMIN =====
+
+const admin = await this.adminRepo.findOne({
+
+  where: {
+    email: dto.email,
+  },
+});
+
+if (admin) {
+
+  const ok = await bcrypt.compare(
+
+    dto.mot_de_passe,
+
+    admin.mot_de_passe,
+  );
+
+  if (ok) {
+
+    const payload = {
+
+      id: admin.id_admin,
+
+      email: admin.email,
+
+      role: 'ADMIN',
+    };
+
+    return {
+
+      access_token:
+        this.jwtService.sign(payload),
+
+      role: 'ADMIN',
+
+      id: admin.id_admin,
+    };
+  }
+}
 
   throw new UnauthorizedException(
     'Email ou mot de passe incorrect',

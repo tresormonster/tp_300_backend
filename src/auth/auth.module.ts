@@ -24,6 +24,8 @@ from '../etudiant/entities/etudiant.entity';
 
 import { Enseignant }
 from '../enseignant/entities/enseignant.entity';
+import { Admin }
+from '../admin/entities/admin.entity';
 
 @Module({
 
@@ -32,6 +34,7 @@ from '../enseignant/entities/enseignant.entity';
     TypeOrmModule.forFeature([
   Etudiant,
   Enseignant,
+  Admin,
 ]),
 
     PassportModule,

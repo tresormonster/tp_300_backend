@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { NoteModule } from './note/note.module';
 import { AnonymatModule } from './anonymat/anonymat.module';
 import { RequeteModule } from './requete/requete.module';
+import { AdminModule } from './admin/admin.module';
 import { ImportEtudiantsModule }
 from './import-etudiants/import-etudiants.module';
 
@@ -88,6 +89,8 @@ from './auth/auth.module';
     RequeteModule,
 
     ImportEtudiantsModule,
+
+    AdminModule,
   ],
 
   controllers: [
