@@ -17,6 +17,7 @@ from '../filiere/entities/filiere.entity';
 import { Niveau } 
 from '../niveau/entities/niveau.entity';
 import { Cycle } from '../cycle/entities/cycle.entity';
+import { ImportEtudiant } from '../import-etudiant/entities/import-etudiant.entity';
 
 @Module({
 
@@ -27,6 +28,7 @@ import { Cycle } from '../cycle/entities/cycle.entity';
   Filiere,
   Niveau,
   Cycle,
+  ImportEtudiant,
 ])
   ],
 

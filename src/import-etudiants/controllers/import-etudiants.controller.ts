@@ -15,6 +15,7 @@ import {
 } from '@nestjs/swagger';
 
 import { ImportEtudiantsService } from '../services/import-etudiants.service';
+import { Get, Delete, Param } from '@nestjs/common';
 
 @ApiTags('Importer des étudiants')
 
@@ -84,4 +85,17 @@ niveau: string,
   niveau,
 );
   }
+
+
+  @Get('import-etudiants')
+async getHistorique() {
+  return this.importService.getHistorique();
+}
+
+@Delete('import-etudiants/:id')
+async supprimerImport(
+  @Param('id') id: number,
+) {
+  return this.importService.supprimerImport(Number(id));
+}
 }

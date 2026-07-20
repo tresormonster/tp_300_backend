@@ -3,6 +3,7 @@ import { NoteModule } from './note/note.module';
 import { AnonymatModule } from './anonymat/anonymat.module';
 import { RequeteModule } from './requete/requete.module';
 import { AdminModule } from './admin/admin.module';
+import { ImportEtudiantModule } from './import-etudiant/import-etudiant.module';
 import { ImportEtudiantsModule }
 from './import-etudiants/import-etudiants.module';
 
@@ -63,6 +64,7 @@ from './auth/auth.module';
       autoLoadEntities: true,
 
       synchronize: true,
+      logging: true,
     }),
 
     // 🔥 MODULES
@@ -91,6 +93,8 @@ from './auth/auth.module';
     ImportEtudiantsModule,
 
     AdminModule,
+
+    ImportEtudiantModule,
   ],
 
   controllers: [

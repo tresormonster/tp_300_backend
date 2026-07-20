@@ -3,6 +3,7 @@ import { Niveau } from '../../niveau/entities/niveau.entity';
 import { OneToMany } from 'typeorm';
 import { Note } from '../../note/entities/note.entity';
 import { Anonymat } from '../../anonymat/entities/anonymat.entity';
+import { ImportEtudiant } from '../../import-etudiant/entities/import-etudiant.entity';
 @Entity()
 export class Etudiant {
 
@@ -53,4 +54,16 @@ niveau!: Niveau;
 notes!: Note[];
 @OneToMany(() => Anonymat, (anonymat) => anonymat.etudiant)
 anonymats!: Anonymat[];
+
+@ManyToOne(
+  () => ImportEtudiant,
+  (importEtudiant) => importEtudiant.etudiants,
+  {
+    nullable: true,
+    onDelete: 'CASCADE',
+  },
+)
+@JoinColumn({ name: 'id_import' })
+importEtudiant!: ImportEtudiant | null;
+
 }

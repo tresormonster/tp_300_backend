@@ -12,8 +12,8 @@ export class Niveau {
   @PrimaryGeneratedColumn()
   id_niveau!: number;
 
-  @Column({ unique: true })
-  nom_niveau!: string;
+  @Column()
+nom_niveau!: string;
 
   @ManyToOne(() => Cycle, (cycle) => cycle.niveaux)
   @JoinColumn({ name: 'id_cycle' })
