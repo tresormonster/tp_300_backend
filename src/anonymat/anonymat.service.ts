@@ -30,106 +30,83 @@ private noteRepository:
   Repository<Note>,
   ) {}
 
-  async genererAnonymats(
-    idUe: number,
-  ) {
+ 
 
-    const ue =
-      await this.ueRepository.findOne({
-
-        where: {
-          id_ue: idUe,
-        },
-
-        relations: [
-          'niveau',
-        ],
-      });
-
-    if (!ue) {
-
-      return {
-        message: 'UE introuvable',
-      };
-    }
-
-    const etudiants =
-      await this.etudiantRepository.find({
-
-        where: {
-          niveau: {
-            id_niveau:
-              ue.niveau.id_niveau,
-          },
-        },
-
-        relations: [
-          'niveau',
-        ],
-      });
-
-    let compteur = 1;
-
-
-
-    const existe =
-  await this.anonymatRepository.count({
-
-    where: {
-
-      ue: {
-
+async genererAnonymats(
+  idUe: number,
+) {
+  const ue =
+    await this.ueRepository.findOne({
+      where: {
         id_ue: idUe,
       },
+      relations: [
+        'niveau',
+      ],
+    });
 
-      is_rattrapage: false,
-    },
-  });
-
-if (existe > 0) {
-
-  return {
-
-    message:
-      'Les anonymats existent déjà pour cette UE',
-  };
-}
-    for (const etudiant of etudiants) {
-
-      const code =
-        'A' +
-        compteur
-          .toString()
-          .padStart(3, '0');
-
-      const anonymat =
-        this.anonymatRepository.create({
-
-          code_anonymat: code,
-
-          is_rattrapage: false,
-
-          etudiant,
-
-          ue,
-        });
-
-      await this
-        .anonymatRepository
-        .save(anonymat);
-
-      compteur++;
-    }
-
+  if (!ue) {
     return {
-
-      message:
-        'Anonymats générés',
-
-      nombre:
-        etudiants.length,
+      message: 'UE introuvable',
     };
   }
+
+  const etudiants =
+    await this.etudiantRepository.find({
+      where: {
+        niveau: {
+          id_niveau: ue.niveau.id_niveau,
+        },
+      },
+      relations: [
+        'niveau',
+      ],
+    });
+
+  const existe =
+    await this.anonymatRepository.count({
+      where: {
+        ue: {
+          id_ue: idUe,
+        },
+        is_rattrapage: false,
+      },
+    });
+
+  if (existe > 0) {
+    return {
+      message:
+        'Les anonymats existent déjà pour cette UE',
+    };
+  }
+
+  for (const etudiant of etudiants) {
+
+    const code =
+      await this.genererCodeUnique(
+        'AN-',
+      );
+
+    const anonymat =
+      this.anonymatRepository.create({
+        code_anonymat: code,
+        is_rattrapage: false,
+        etudiant,
+        ue,
+      });
+
+    await this.anonymatRepository.save(
+      anonymat,
+    );
+  }
+
+  return {
+    message:
+      'Anonymats générés avec succès',
+    nombre:
+      etudiants.length,
+  };
+}
 
   async findAll() {
 
@@ -182,110 +159,92 @@ if (existe > 0) {
         'Anonymat supprimé',
     };
   }
+  
+
+
+
+
+
   async genererAnonymatsRattrapage(
   idUe: number,
 ) {
-
   const ue =
     await this.ueRepository.findOne({
-
       where: {
         id_ue: idUe,
       },
     });
 
   if (!ue) {
-
     return {
-      message:
-        'UE introuvable',
+      message: 'UE introuvable',
     };
   }
 
   const notes =
     await this.noteRepository.find({
-
       where: {
-
         ue: {
           id_ue: idUe,
         },
-
         est_rattrapable: true,
       },
+      relations: [
+        'etudiant',
+      ],
     });
 
   if (notes.length === 0) {
-
     return {
-
       message:
         'Aucun étudiant éligible au rattrapage',
     };
   }
 
-const existe =
-  await this.anonymatRepository.count({
-
-    where: {
-
-      ue: {
-
-        id_ue: idUe,
+  const existe =
+    await this.anonymatRepository.count({
+      where: {
+        ue: {
+          id_ue: idUe,
+        },
+        is_rattrapage: true,
       },
+    });
 
-      is_rattrapage: true,
-    },
-  });
-
-if (existe > 0) {
-
-  return {
-
-    message:
-      'Les anonymats de rattrapage existent déjà pour cette UE',
-  };
-}
-  let compteur = 1;
+  if (existe > 0) {
+    return {
+      message:
+        'Les anonymats de rattrapage existent déjà pour cette UE',
+    };
+  }
 
   for (const note of notes) {
 
+    const code =
+      await this.genererCodeUnique(
+        'RT-',
+      );
+
     const anonymat =
       this.anonymatRepository.create({
-
-        code_anonymat:
-
-          'AR' +
-
-          compteur
-            .toString()
-            .padStart(3, '0'),
-
+        code_anonymat: code,
         is_rattrapage: true,
-
-        etudiant:
-          note.etudiant,
-
+        etudiant: note.etudiant,
         ue,
       });
 
-    await this
-      .anonymatRepository
-      .save(anonymat);
-
-    compteur++;
+    await this.anonymatRepository.save(
+      anonymat,
+    );
   }
 
   return {
-
     message:
-      'Anonymats rattrapage générés',
-
+      'Anonymats de rattrapage générés avec succès',
     nombre:
       notes.length,
   };
 }
-
 
 async listeParUe(
   idUe: number,
@@ -364,5 +323,44 @@ async supprimerParUe(
     message:
       "Anonymats supprimés",
   };
+}
+
+
+private async genererCodeUnique(
+  prefixe: string,
+): Promise<string> {
+
+  while (true) {
+
+    const caracteres =
+      "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+    let code = prefixe;
+
+    for (let i = 0; i < 6; i++) {
+
+      code +=
+        caracteres[
+          Math.floor(
+            Math.random() *
+                caracteres.length,
+          )
+        ];
+    }
+
+    const existe =
+      await this.anonymatRepository.findOne({
+
+        where: {
+
+          code_anonymat: code,
+        },
+      });
+
+    if (!existe) {
+
+      return code;
+    }
+  }
 }
 }
